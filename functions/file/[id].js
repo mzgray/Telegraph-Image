@@ -7,6 +7,7 @@ export async function onRequest(context) {  // Contents of context object
         next, // used for middleware or to fetch assets    
         data, // arbitrary space for passing data between middlewares 
     } = context;
+    context.request
     //域名从cloudflare的环境变量中获取
     const allowedDomains = env.DOMAIN_LIST.split(",");
     // 获取列表中的第一个域名
@@ -18,11 +19,9 @@ export async function onRequest(context) {  // Contents of context object
     try {
         refererUrl = new URL(Referer);
     } catch (error) {
-        console.log('invalid referer');
         return Response.redirect(`https://${firstDomain}`, 302);
     }
     // Check if the hostname of the Referer is in the list of allowed domains
-    console.log('allowedDomains:' + allowedDomains + ',hostname:' + hostname);
     if (!allowedDomains.includes(refererUrl.hostname)) {
         return Response.redirect(`https://${firstDomain}`, 302);
     }
